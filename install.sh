@@ -101,7 +101,7 @@ generate_certificate() {
     # 将 domain_name 改为局部变量，防止被其他彩色输出污染    
     local default_domain="www.lmx0125.icu"
     
-    read -p "请输入域名 (默认 ${default_domain}): " input_domain
+    read -p "请输入域名 (默认 ${default_domain}): " input_domain < /dev/tty
     local domain_name=${input_domain:-$default_domain}
     local cert_dir="/usr/local/hysteria/certs"
     mkdir -p "$cert_dir"
@@ -128,7 +128,7 @@ generate_certificate() {
 # ===============================
 configure_port() {
     local port
-    read -p "请输入 Hysteria 监听端口（默认 30303）: " input
+    read -p "请输入 Hysteria 监听端口（默认 30303）: " input < /dev/tty
     port=${input:-30303}
     local pid
     pid=$(lsof -t -iUDP:"$port" || true)
@@ -144,7 +144,7 @@ configure_port() {
 # 配置密码
 # ===============================
 configure_password() {
-    read -p "请输入 Hysteria 密码（默认 Passw1rd1234）: " input
+    read -p "请输入 Hysteria 密码（默认 Passw1rd1234）: " input < /dev/tty
     password=${input:-Passw1rd1234}
     echo "$password"
 }
@@ -298,7 +298,7 @@ main() {
     install_custom_packages
 
     if [[ -d "/usr/local/hysteria" ]]; then
-        read -r -p "$(random_color "ℹ️ 检测到 Hysteria 已安装。您是否要卸载 (cleanup)？(y/N/continue): ")" choice
+        read -r -p "$(random_color "ℹ️ 检测到 Hysteria 已安装。您是否要卸载 (cleanup)？(y/N/continue): ")" choice < /dev/tty
         
         case "$choice" in
             y|Y)
