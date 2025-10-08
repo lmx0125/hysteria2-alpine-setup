@@ -98,13 +98,15 @@ download_hysteria() {
 # 生成自签名证书 (修复后)
 # ===============================
 generate_certificate() {
-    # 将 domain_name 改为局部变量，防止被其他彩色输出污染
-    local domain_name="www.lmx0125.icu"
+    # 将 domain_name 改为局部变量，防止被其他彩色输出污染    
+    local default_domain="www.lmx0125.icu"
+    
+    read -p "请输入域名 (默认 ${default_domain}): " input_domain
+    local domain_name=${input_domain:-$default_domain}
     local cert_dir="/usr/local/hysteria/certs"
     mkdir -p "$cert_dir"
 
     if [ ! -f "${cert_dir}/${domain_name}.crt" ] || [ ! -f "${cert_dir}/${domain_name}.key" ]; then
-        # 证书生成逻辑不变
         openssl req -x509 -nodes -newkey ec:<(openssl ecparam -name prime256v1) \
             -keyout "${cert_dir}/${domain_name}.key" \
             -out "${cert_dir}/${domain_name}.crt" \
@@ -112,7 +114,6 @@ generate_certificate() {
 
         chmod 600 "${cert_dir}/${domain_name}."*
         
-        # 仅打印彩色提示信息，不作为函数返回值
         random_color "✅ 自签名证书已生成：${domain_name}"
     else
         random_color "ℹ️ 证书已存在，跳过生成"
@@ -127,8 +128,8 @@ generate_certificate() {
 # ===============================
 configure_port() {
     local port
-    read -p "请输入 Hysteria 监听端口（默认 30303）: " port
-    port=${port:-30303}
+    read -p "请输入 Hysteria 监听端口（默认 30303）: " input
+    port=${input:-30303}
     local pid
     pid=$(lsof -t -iUDP:"$port" || true)
     if [[ -n "$pid" ]]; then
@@ -143,8 +144,8 @@ configure_port() {
 # 配置密码
 # ===============================
 configure_password() {
-    read -p "请输入 Hysteria 密码（默认 Passw1rd1234）: " password
-    password=${password:-Passw1rd1234}
+    read -p "请输入 Hysteria 密码（默认 Passw1rd1234）: " input
+    password=${input:-Passw1rd1234}
     echo "$password"
 }
 
