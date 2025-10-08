@@ -34,6 +34,11 @@ It aims to simplify setup for servers, VPS, or embedded systems.
 ## ⚙️ Installation
 
 Run the following command to install and deploy:
+(you need bash environment first)
 
+```ash
+apk add --no-cache bash
+```
+then
 ```bash
-wget -qO- https://raw.githubusercontent.com/lmx0125/hysteria2-alpine-setup/main/install.sh | sh
+wget -qO- https://raw.githubusercontent.com/lmx0125/hysteria2-alpine-setup/main/install.sh | bash
