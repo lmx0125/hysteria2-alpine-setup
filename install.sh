@@ -208,25 +208,21 @@ EOF
         echo -e "$(random_color '创建/更新 OpenRC 服务...')"
         cat > /etc/init.d/${service_name} <<EOF
 #!/sbin/openrc-run
+
 command="/usr/local/hysteria/hysteria-linux-${arch}"
 command_args="-c /usr/local/hysteria/config.yaml server"
 pidfile="/run/hysteria.pid"
+name="hysteria"
+
 depend() {
     need net
 }
 
-start() {
-    ebegin "Starting Hysteria"
-    start-stop-daemon --start --quiet --pidfile \$pidfile \\
-        --exec \$command -- \$command_args >/dev/null 2>&1 &
-    eend \$?
-}
+supervisor="supervise-daemon"
+respawn_delay=3
+respawn_max=0
+respawn_reason="exit signal crash"
 
-stop() {
-    ebegin "Stopping Hysteria"
-    start-stop-daemon --stop --quiet --pidfile \$pidfile --retry 5
-    eend \$?
-}
 EOF
         chmod +x /etc/init.d/${service_name}
         rc-update add ${service_name} default
