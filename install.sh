@@ -41,7 +41,14 @@ install_custom_packages() {
             apk update && apk add --no-cache "${pkgs[@]}"
             ;;
         debian|ubuntu)
-            apt update -y && apt install -y "${pkgs[@]}"
+            # 非交互安装，避免 debconf 交互提示
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update -y
+            # --no-install-recommends 大幅减少 dpkg 内存占用
+            apt-get install -y --no-install-recommends \
+                -o Dpkg::Options::="--force-confdef" \
+                -o Dpkg::Options::="--force-confold" \
+                "${pkgs[@]}"
             ;;
         centos|rhel|fedora)
             if command -v dnf >/dev/null 2>&1; then
